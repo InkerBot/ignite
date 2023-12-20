@@ -33,7 +33,10 @@ import java.io.IOException;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 import java.nio.file.Path;
+import java.util.Map;
+import java.util.Set;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 public final class Agent {
   /**
@@ -42,7 +45,7 @@ public final class Agent {
   private static Instrumentation LAUNCH_INSTRUMENTATION = null;
 
   public static void addTransformer(final @NonNull ClassFileTransformer transformer) {
-    // Java 9 only.
+    LAUNCH_INSTRUMENTATION.addTransformer(transformer);
   }
 
   /**
@@ -86,7 +89,18 @@ public final class Agent {
   }
 
   public static void updateSecurity() {
-    // Java 9 only.
+    final Set<Module> systemUnnamed = Set.of(ClassLoader.getSystemClassLoader().getUnnamedModule());
+    Agent.LAUNCH_INSTRUMENTATION.redefineModule(
+      Manifest.class.getModule(),
+      Set.of(),
+      Map.of("sun.security.util", systemUnnamed), // ModLauncher
+      Map.of(
+        // ModLauncher -- needs Manifest.jv, and various JarVerifier methods
+        "java.util.jar", systemUnnamed
+      ),
+      Set.of(),
+      Map.of()
+    );
   }
 
   private Agent() {}
