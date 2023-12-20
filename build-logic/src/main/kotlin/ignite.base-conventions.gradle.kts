@@ -1,10 +1,9 @@
-import de.marcphilipp.gradle.nexus.NexusPublishExtension
+import gradle.kotlin.dsl.accessors._a417b5339f78f4c4344edb5196ac97d4.publishing
 
 plugins {
   id("net.kyori.indra")
   id("net.kyori.indra.license-header")
   id("net.kyori.indra.publishing")
-  id("de.marcphilipp.nexus-publish")
 }
 
 repositories {
@@ -23,15 +22,20 @@ indra {
   javaVersions {
     target(17)
   }
+}
 
-  extensions.configure<NexusPublishExtension> {
-    System.getenv("JB_SPACE_MAVEN_REPOSITORY")?.let { url ->
-      repositories.create("maven") {
-        nexusUrl.set(uri(url))
-        snapshotRepositoryUrl.set(uri(url))
-        username.set(System.getenv("JB_SPACE_CLIENT_ID"))
-        password.set(System.getenv("JB_SPACE_CLIENT_SECRET"))
+publishing {
+  repositories {
+    val spaceMavenUrl = System.getenv("JB_SPACE_MAVEN_REPOSITORY")
+    if (spaceMavenUrl != null) {
+      maven(spaceMavenUrl) {
+        credentials {
+          username = System.getenv("JB_SPACE_CLIENT_ID")
+          password = System.getenv("JB_SPACE_CLIENT_SECRET")
+        }
       }
+    } else {
+      mavenLocal()
     }
   }
 }
