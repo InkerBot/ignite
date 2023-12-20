@@ -13,9 +13,8 @@ dependencies {
 
   api("org.spongepowered:configurate-core:4.1.2")
 
-  api("com.google.inject:guice:7.0.0") {
+  api("com.google.inject:guice:6.0.0") {
     exclude(group = "com.google.code.findbugs", module = "jsr305")
-    exclude(group = "com.google.guava", module = "guava")
   }
 
   // Transformation
