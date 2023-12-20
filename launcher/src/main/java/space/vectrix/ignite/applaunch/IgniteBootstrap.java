@@ -58,7 +58,7 @@ public final class IgniteBootstrap {
   /**
    * The launch service name.
    */
-  public static final @NonNull String LAUNCH_SERVICE = System.getProperty(Blackboard.LAUNCH_SERVICE.getName(), "dummy");
+  public static final @NonNull String LAUNCH_SERVICE = System.getProperty(Blackboard.LAUNCH_SERVICE.getName(), "default");
 
   /**
    * The launch jar path.
