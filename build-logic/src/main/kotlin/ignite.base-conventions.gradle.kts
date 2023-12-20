@@ -10,9 +10,7 @@ plugins {
 repositories {
   mavenLocal()
   mavenCentral()
-  maven {
-    url = uri("https://oss.sonatype.org/content/groups/public/")
-  }
+  maven("https://oss.sonatype.org/content/groups/public/")
 }
 
 java {
@@ -26,16 +24,11 @@ indra {
     target(17)
   }
 
-  github("vectrix-space", "ignite") {
-    ci(true)
-  }
-
-  mitLicense()
-
   extensions.configure<NexusPublishExtension> {
     System.getenv("JB_SPACE_MAVEN_REPOSITORY")?.let { url ->
       repositories.create("maven") {
         nexusUrl.set(uri(url))
+        snapshotRepositoryUrl.set(uri(url))
         username.set(System.getenv("JB_SPACE_CLIENT_ID"))
         password.set(System.getenv("JB_SPACE_CLIENT_SECRET"))
       }
